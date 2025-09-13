@@ -5,7 +5,7 @@
   const EmbedTracker = {
     // Configuration
     config: {
-      apiBaseUrl: 'https://your-production-domain.com/api', // Update this to your actual production API domain
+      apiBaseUrl: 'http://localhost:3000/api', // Local development
       version: '1.0.0'
     },
 
