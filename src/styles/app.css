@@ -1,0 +1,149 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --header-height: 48px;
+}
+
+.light {
+    --background: 202 7% 93%;
+    --background-color: 120 12% 16%;
+
+    --foreground: 202 7% 7%;
+    --foreground-special: 202 22% 25%;
+    --foreground-dull: 202 7% 36%;
+
+    --header: 202 75% 85%;
+
+    --card: 202 7% 88%;
+    --card-foreground: 202 7% 7%;
+
+    --popover: 202 7% 88%;
+    --popover-foreground: 202 7% 7%;
+
+    --primary: 202 7% 83%;
+    --primary-foreground: 202 7% 7%;
+
+    --secondary: 202 7% 93%;
+    --secondary-foreground: 202 7% 7%;
+
+    --muted: 202 7% 88%;
+    --muted-foreground: 202 7% 17%;
+
+    --accent: 202 7% 78%;
+    --accent-foreground: 202 7% 7%;
+
+    --destructive: 4 75% 25%;
+    --destructive-foreground: 202 7% 7%;
+
+    --constructive: 120 75% 10%;
+    --constructive-foreground: 202 7% 7%;
+
+    --border: 202 7% 80%;
+
+    --input: 202 7% 80%;
+
+    --ring: 202 7% 7%;
+
+    --radius: 0.5rem;
+    --radius-large: 1rem;
+
+    --hover: 202 82% 48%;
+
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+  }
+
+  .dark {
+    --background: 202 7% 3%;
+    --background-color: 120 12% 16%;
+
+    --foreground: 202 7% 93%;    
+    --foreground-special: 202 22% 25%;
+    --foreground-dull: 202 7% 36%;
+
+    --header: 206 64% 12%;
+
+    --card: 202 7% 12%;
+    --card-foreground: 202 7% 93%;
+
+    --popover: 202 7% 12%;
+    --popover-foreground: 202 7% 93%;
+
+    --primary: 202 7% 17%;
+    --primary-foreground: 202 7% 93%;
+
+    --secondary: 202 7% 7%;
+    --secondary-foreground: 202 7% 93%;
+
+    --muted: 202 7% 12%;
+    --muted-foreground: 202 7% 83%;
+
+    --accent: 202 7% 22%;
+    --accent-foreground: 202 7% 93%;
+
+    --destructive: 4 75% 25%;
+    --destructive-foreground: 202 7% 93%;
+
+    --constructive: 120 75% 10%;
+    --constructive-foreground: 202 7% 93%;
+
+    --border: 202 7% 20%;
+
+    --input: 202 7% 20%;
+
+    --ring: 202 7% 93%;
+
+    --radius: 0.5rem;
+    --radius-large: 1rem;
+    
+    --hover: 202 82% 48%;
+
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+  }
+
+@layer components {
+  .fade-right {
+    --fade-width: min(4rem, 25%);
+    -webkit-mask-image: linear-gradient(to left, hsla(0, 0%, 0%, 0) 0%, hsl(0, 0%, 0%) var(--fade-width));
+    mask-image: linear-gradient(to left, hsla(0, 0%, 0%, 0) 0%, hsl(0, 0%, 0%) var(--fade-width));
+  }
+
+  .fade-left {
+    --fade-width: min(4rem, 25%);
+    -webkit-mask-image: linear-gradient(to right, hsla(0, 0%, 0%, 0) 0%, hsl(0, 0%, 0%) var(--fade-width));
+    mask-image: linear-gradient(to right, hsla(0, 0%, 0%, 0) 0%, hsl(0, 0%, 0%) var(--fade-width));
+  }
+  
+  .fade-both-horizontal {
+    --fade-width: min(4rem, 25%);
+    -webkit-mask-image: linear-gradient(
+      to right, 
+      hsla(0, 0%, 0%, 0) 0%, 
+      hsl(0, 0%, 0%) var(--fade-width),
+      hsl(0, 0%, 0%) calc(100% - var(--fade-width)),
+      hsla(0, 0%, 0%, 0) 100%
+    );
+    mask-image: linear-gradient(
+      to right, 
+      hsla(0, 0%, 0%, 0) 0%, 
+      hsl(0, 0%, 0%) var(--fade-width),
+      hsl(0, 0%, 0%) calc(100% - var(--fade-width)),
+      hsla(0, 0%, 0%, 0) 100%
+    );
+  }
+  
+  .fade-bottom {
+    --fade-height: min(4rem, 25%);
+    -webkit-mask-image: linear-gradient(to top, hsla(0, 0%, 0%, 0) 0%, hsl(0, 0%, 0%) var(--fade-height));
+    mask-image: linear-gradient(to top, hsla(0, 0%, 0%, 0) 0%, hsl(0, 0%, 0%) var(--fade-height));
+  }
+}
