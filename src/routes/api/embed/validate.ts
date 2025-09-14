@@ -1,22 +1,20 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createServerFileRoute } from '@tanstack/react-start/server'
 import { db } from '~/lib/pg/connect'
 
-export const Route = createFileRoute('/api/embed/validate')({
-  component: () => null,
-})
-
-export const POST = async (request: Request) => {
-  try {
-    const body = await request.json()
-    return await validateEmbedToken(body)
-  } catch (error) {
-    console.error('Embed API error:', error)
-    return new Response(JSON.stringify({ error: 'Internal server error' }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' }
-    })
+export const ServerRoute = createServerFileRoute('/api/embed/validate').methods({
+  POST: async ({ request }) => {
+    try {
+      const body = await request.json()
+      return await validateEmbedToken(body)
+    } catch (error) {
+      console.error('Embed API error:', error)
+      return new Response(JSON.stringify({ error: 'Internal server error' }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
+      })
+    }
   }
-}
+})
 
 // Validate embed token and return company ID
 async function validateEmbedToken(body: { embedToken: string; domain: string; referrer: string }) {
@@ -56,22 +54,34 @@ async function validateEmbedToken(body: { embedToken: string; domain: string; re
     }
 
     // Check domain restrictions if they exist
-    if (embedTokenRecord.allowedDomains && Array.isArray(embedTokenRecord.allowedDomains)) {
-      const allowedDomains = embedTokenRecord.allowedDomains
+    if (embedTokenRecord.allowedDomains) {
+      // Parse the JSON string if it's a string, otherwise use as-is
+      const allowedDomains = typeof embedTokenRecord.allowedDomains === 'string' 
+        ? JSON.parse(embedTokenRecord.allowedDomains)
+        : embedTokenRecord.allowedDomains
+      
+      if (Array.isArray(allowedDomains)) {
       const isDomainAllowed = allowedDomains.some(allowedDomain => {
         // Support both exact matches and wildcard subdomains
         if (allowedDomain.startsWith('*.')) {
           const baseDomain = allowedDomain.substring(2)
           return domain === baseDomain || domain.endsWith('.' + baseDomain)
         }
+        
+        // Special handling for localhost - if allowed domain has port, also allow without port
+        if (allowedDomain.startsWith('localhost:') && domain === 'localhost') {
+          return true
+        }
+        
         return domain === allowedDomain
       })
 
-      if (!isDomainAllowed) {
-        return new Response(JSON.stringify({ error: 'Domain not authorized for this token' }), {
-          status: 403,
-          headers: { 'Content-Type': 'application/json' }
-        })
+        if (!isDomainAllowed) {
+          return new Response(JSON.stringify({ error: 'Domain not authorized for this token' }), {
+            status: 403,
+            headers: { 'Content-Type': 'application/json' }
+          })
+        }
       }
     }
 

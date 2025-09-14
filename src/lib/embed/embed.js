@@ -19,7 +19,7 @@
           },
           body: JSON.stringify({ 
             embedToken,
-            domain: window.location.hostname,
+            domain: window.location.host || window.location.hostname,
             referrer: document.referrer 
           })
         });
@@ -132,26 +132,69 @@
       return button;
     },
 
+    // Track visitor automatically
+    async trackVisitor() {
+      try {
+        const sessionData = this.getSessionData();
+        const result = await this.createVisitor(this.companyId, sessionData);
+        
+        if (result) {
+          this.visitorId = result.visitorId;
+          console.log('Visitor tracked successfully:', result.visitorId);
+        }
+      } catch (error) {
+        console.error('Error tracking visitor:', error);
+      }
+    },
+
+    // Create lead entry
+    async createLead(visitorId) {
+      try {
+        const response = await fetch(`${this.config.apiBaseUrl}/embed/lead`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            companyId: this.companyId,
+            visitorId: visitorId,
+            status: 'open'
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to create lead');
+        }
+
+        const data = await response.json();
+        return data;
+      } catch (error) {
+        console.error('Failed to create lead:', error);
+        return null;
+      }
+    },
+
     // Handle button click
-    async handleButtonClick(companyId, embedToken) {
+    async handleButtonClick() {
       const button = document.getElementById('embed-tracker-btn');
       if (!button) return;
 
       // Show loading state
       const originalText = button.textContent;
-      button.textContent = 'Tracking...';
+      button.textContent = 'Creating Lead...';
       button.disabled = true;
       button.style.opacity = '0.7';
 
       try {
-        // Get session data
-        const sessionData = this.getSessionData();
+        if (!this.visitorId) {
+          throw new Error('No visitor ID available');
+        }
         
-        // Create visitor entry
-        const result = await this.createVisitor(companyId, sessionData);
+        // Create lead entry
+        const result = await this.createLead(this.visitorId);
         
         if (result) {
-          button.textContent = 'Visit Tracked!';
+          button.textContent = 'Lead Created!';
           button.style.background = '#28a745';
           
           // Reset after 2 seconds
@@ -162,10 +205,10 @@
             button.style.opacity = '1';
           }, 2000);
         } else {
-          throw new Error('Failed to track visit');
+          throw new Error('Failed to create lead');
         }
       } catch (error) {
-        console.error('Error tracking visit:', error);
+        console.error('Error creating lead:', error);
         button.textContent = 'Error - Try Again';
         button.style.background = '#dc3545';
         
@@ -195,13 +238,20 @@
         return;
       }
 
+      // Store companyId and embedToken for later use
+      this.companyId = companyId;
+      this.embedToken = embedToken;
+
+      // Automatically track visitor on page load
+      await this.trackVisitor();
+
       // Create and inject button
       const button = this.createButton(options);
       document.body.appendChild(button);
 
       // Add click handler
       button.addEventListener('click', () => {
-        this.handleButtonClick(companyId, embedToken);
+        this.handleButtonClick();
       });
 
       console.log('EmbedTracker: Initialized successfully');

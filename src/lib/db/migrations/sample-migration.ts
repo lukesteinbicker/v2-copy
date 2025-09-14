@@ -49,7 +49,7 @@ export async function runSampleMigration(): Promise<void> {
         token: embedToken,
         name: 'Main Website Token',
         active: true,
-        allowedDomains: JSON.stringify(['lukesteinbicker.com', '*.lukesteinbicker.com']), // Allow main domain and subdomains
+        allowedDomains: JSON.stringify(['lukesteinbicker.com', '*.lukesteinbicker.com', 'localhost', 'localhost:4321', 'localhost:3000']), // Allow main domain, subdomains, and localhost
         expiresAt: null, // No expiration
         lastUsedAt: null,
         createdAt: new Date(),

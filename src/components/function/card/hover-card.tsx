@@ -1,6 +1,7 @@
 import * as React from "react";
 import * as HoverCardPrimitive from "@radix-ui/react-hover-card";
 import { cn } from "~/utils/tailwind-merge";
+import { HoverCardPortal } from "@radix-ui/react-hover-card";
 
 // SOURCED FROM https://ui.shadcn.com/docs/components/hover-card
 
@@ -25,4 +26,4 @@ const HoverCardContent = React.forwardRef<
 ));
 HoverCardContent.displayName = HoverCardPrimitive.Content.displayName;
 
-export { HoverCard, HoverCardTrigger, HoverCardContent };
+export { HoverCard, HoverCardTrigger, HoverCardContent, HoverCardPortal };

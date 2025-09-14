@@ -17,9 +17,10 @@ import MainPage from "~/components/function/layout/mainPage";
 import TopMenu from "~/components/function/layout/topMenu";
 import { UserMenu } from "~/components/function/layout/userMenu";
 import { ThemeProvider, useTheme } from "~/components/function/theme/theme-provider";
-import { QueryClient } from '@tanstack/react-query'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import MainMenu from '~/components/function/layout/mainMenu'
 import { getServerSession } from '~/lib/auth/auth-client'
+import { NuqsAdapterWrapper } from "~/components/function/data-table/components/src/providers/nuqs-adapter";
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
@@ -75,12 +76,15 @@ export const Route = createRootRouteWithContext<{
     ],
   }),
   errorComponent: (props) => {
+    const { queryClient } = props.context;
     return (
-        <ThemeProvider theme="dark">
-          <RootDocument>
-            <DefaultCatchBoundary {...props} />
-          </RootDocument>
-        </ThemeProvider>
+        <QueryClientProvider client={queryClient}>
+          <ThemeProvider theme="dark">
+            <RootDocument>
+              <DefaultCatchBoundary {...props} />
+            </RootDocument>
+          </ThemeProvider>
+        </QueryClientProvider>
     );
   },
   component: RootComponent,
@@ -89,13 +93,18 @@ export const Route = createRootRouteWithContext<{
 
 function RootComponent() {
   const theme = "dark";
+  const { queryClient } = Route.useRouteContext();
 
   return (
-      <ThemeProvider theme={theme}>
-        <RootDocument>
-          <Outlet />
-        </RootDocument>
-      </ThemeProvider>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider theme={theme}>
+          <NuqsAdapterWrapper>
+            <RootDocument>
+              <Outlet />
+            </RootDocument>
+          </NuqsAdapterWrapper>
+        </ThemeProvider>
+      </QueryClientProvider>
   );
 }
 

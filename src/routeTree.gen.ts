@@ -13,12 +13,13 @@ import { createServerRootRoute } from '@tanstack/react-start/server'
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as OnboardingRouteImport } from './routes/_onboarding'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as LeadsIndexRouteImport } from './routes/leads/index'
 import { Route as OnboardingSignupRouteImport } from './routes/_onboarding/signup'
 import { Route as OnboardingLoginRouteImport } from './routes/_onboarding/login'
-import { Route as mainUserIdIndexRouteImport } from './routes/(main)/$userId/index'
-import { Route as ApiEmbedVisitorRouteImport } from './routes/api/embed/visitor'
-import { Route as ApiEmbedValidateRouteImport } from './routes/api/embed/validate'
-import { Route as mainUserIdVehicleIdIndexRouteImport } from './routes/(main)/$userId/$vehicleId/index'
+import { ServerRoute as ApiLeadsRouteServerRouteImport } from './routes/api/leads/route'
+import { ServerRoute as ApiEmbedVisitorServerRouteImport } from './routes/api/embed/visitor'
+import { ServerRoute as ApiEmbedValidateServerRouteImport } from './routes/api/embed/validate'
+import { ServerRoute as ApiEmbedLeadServerRouteImport } from './routes/api/embed/lead'
 import { ServerRoute as ApiAuthSplatServerRouteImport } from './routes/api/auth/$'
 
 const rootServerRouteImport = createServerRootRoute()
@@ -32,6 +33,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LeadsIndexRoute = LeadsIndexRouteImport.update({
+  id: '/leads/',
+  path: '/leads/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OnboardingSignupRoute = OnboardingSignupRouteImport.update({
   id: '/signup',
   path: '/signup',
@@ -42,27 +48,26 @@ const OnboardingLoginRoute = OnboardingLoginRouteImport.update({
   path: '/login',
   getParentRoute: () => OnboardingRoute,
 } as any)
-const mainUserIdIndexRoute = mainUserIdIndexRouteImport.update({
-  id: '/(main)/$userId/',
-  path: '/$userId/',
-  getParentRoute: () => rootRouteImport,
+const ApiLeadsRouteServerRoute = ApiLeadsRouteServerRouteImport.update({
+  id: '/api/leads',
+  path: '/api/leads',
+  getParentRoute: () => rootServerRouteImport,
 } as any)
-const ApiEmbedVisitorRoute = ApiEmbedVisitorRouteImport.update({
+const ApiEmbedVisitorServerRoute = ApiEmbedVisitorServerRouteImport.update({
   id: '/api/embed/visitor',
   path: '/api/embed/visitor',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => rootServerRouteImport,
 } as any)
-const ApiEmbedValidateRoute = ApiEmbedValidateRouteImport.update({
+const ApiEmbedValidateServerRoute = ApiEmbedValidateServerRouteImport.update({
   id: '/api/embed/validate',
   path: '/api/embed/validate',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => rootServerRouteImport,
 } as any)
-const mainUserIdVehicleIdIndexRoute =
-  mainUserIdVehicleIdIndexRouteImport.update({
-    id: '/(main)/$userId/$vehicleId/',
-    path: '/$userId/$vehicleId/',
-    getParentRoute: () => rootRouteImport,
-  } as any)
+const ApiEmbedLeadServerRoute = ApiEmbedLeadServerRouteImport.update({
+  id: '/api/embed/lead',
+  path: '/api/embed/lead',
+  getParentRoute: () => rootServerRouteImport,
+} as any)
 const ApiAuthSplatServerRoute = ApiAuthSplatServerRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
@@ -73,19 +78,13 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof OnboardingLoginRoute
   '/signup': typeof OnboardingSignupRoute
-  '/api/embed/validate': typeof ApiEmbedValidateRoute
-  '/api/embed/visitor': typeof ApiEmbedVisitorRoute
-  '/$userId': typeof mainUserIdIndexRoute
-  '/$userId/$vehicleId': typeof mainUserIdVehicleIdIndexRoute
+  '/leads': typeof LeadsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof OnboardingLoginRoute
   '/signup': typeof OnboardingSignupRoute
-  '/api/embed/validate': typeof ApiEmbedValidateRoute
-  '/api/embed/visitor': typeof ApiEmbedVisitorRoute
-  '/$userId': typeof mainUserIdIndexRoute
-  '/$userId/$vehicleId': typeof mainUserIdVehicleIdIndexRoute
+  '/leads': typeof LeadsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -93,70 +92,79 @@ export interface FileRoutesById {
   '/_onboarding': typeof OnboardingRouteWithChildren
   '/_onboarding/login': typeof OnboardingLoginRoute
   '/_onboarding/signup': typeof OnboardingSignupRoute
-  '/api/embed/validate': typeof ApiEmbedValidateRoute
-  '/api/embed/visitor': typeof ApiEmbedVisitorRoute
-  '/(main)/$userId/': typeof mainUserIdIndexRoute
-  '/(main)/$userId/$vehicleId/': typeof mainUserIdVehicleIdIndexRoute
+  '/leads/': typeof LeadsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/login'
-    | '/signup'
-    | '/api/embed/validate'
-    | '/api/embed/visitor'
-    | '/$userId'
-    | '/$userId/$vehicleId'
+  fullPaths: '/' | '/login' | '/signup' | '/leads'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/login'
-    | '/signup'
-    | '/api/embed/validate'
-    | '/api/embed/visitor'
-    | '/$userId'
-    | '/$userId/$vehicleId'
+  to: '/' | '/login' | '/signup' | '/leads'
   id:
     | '__root__'
     | '/'
     | '/_onboarding'
     | '/_onboarding/login'
     | '/_onboarding/signup'
-    | '/api/embed/validate'
-    | '/api/embed/visitor'
-    | '/(main)/$userId/'
-    | '/(main)/$userId/$vehicleId/'
+    | '/leads/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   OnboardingRoute: typeof OnboardingRouteWithChildren
-  ApiEmbedValidateRoute: typeof ApiEmbedValidateRoute
-  ApiEmbedVisitorRoute: typeof ApiEmbedVisitorRoute
-  mainUserIdIndexRoute: typeof mainUserIdIndexRoute
-  mainUserIdVehicleIdIndexRoute: typeof mainUserIdVehicleIdIndexRoute
+  LeadsIndexRoute: typeof LeadsIndexRoute
 }
 export interface FileServerRoutesByFullPath {
+  '/api/leads': typeof ApiLeadsRouteServerRoute
   '/api/auth/$': typeof ApiAuthSplatServerRoute
+  '/api/embed/lead': typeof ApiEmbedLeadServerRoute
+  '/api/embed/validate': typeof ApiEmbedValidateServerRoute
+  '/api/embed/visitor': typeof ApiEmbedVisitorServerRoute
 }
 export interface FileServerRoutesByTo {
+  '/api/leads': typeof ApiLeadsRouteServerRoute
   '/api/auth/$': typeof ApiAuthSplatServerRoute
+  '/api/embed/lead': typeof ApiEmbedLeadServerRoute
+  '/api/embed/validate': typeof ApiEmbedValidateServerRoute
+  '/api/embed/visitor': typeof ApiEmbedVisitorServerRoute
 }
 export interface FileServerRoutesById {
   __root__: typeof rootServerRouteImport
+  '/api/leads': typeof ApiLeadsRouteServerRoute
   '/api/auth/$': typeof ApiAuthSplatServerRoute
+  '/api/embed/lead': typeof ApiEmbedLeadServerRoute
+  '/api/embed/validate': typeof ApiEmbedValidateServerRoute
+  '/api/embed/visitor': typeof ApiEmbedVisitorServerRoute
 }
 export interface FileServerRouteTypes {
   fileServerRoutesByFullPath: FileServerRoutesByFullPath
-  fullPaths: '/api/auth/$'
+  fullPaths:
+    | '/api/leads'
+    | '/api/auth/$'
+    | '/api/embed/lead'
+    | '/api/embed/validate'
+    | '/api/embed/visitor'
   fileServerRoutesByTo: FileServerRoutesByTo
-  to: '/api/auth/$'
-  id: '__root__' | '/api/auth/$'
+  to:
+    | '/api/leads'
+    | '/api/auth/$'
+    | '/api/embed/lead'
+    | '/api/embed/validate'
+    | '/api/embed/visitor'
+  id:
+    | '__root__'
+    | '/api/leads'
+    | '/api/auth/$'
+    | '/api/embed/lead'
+    | '/api/embed/validate'
+    | '/api/embed/visitor'
   fileServerRoutesById: FileServerRoutesById
 }
 export interface RootServerRouteChildren {
+  ApiLeadsRouteServerRoute: typeof ApiLeadsRouteServerRoute
   ApiAuthSplatServerRoute: typeof ApiAuthSplatServerRoute
+  ApiEmbedLeadServerRoute: typeof ApiEmbedLeadServerRoute
+  ApiEmbedValidateServerRoute: typeof ApiEmbedValidateServerRoute
+  ApiEmbedVisitorServerRoute: typeof ApiEmbedVisitorServerRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -175,6 +183,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/leads/': {
+      id: '/leads/'
+      path: '/leads'
+      fullPath: '/leads'
+      preLoaderRoute: typeof LeadsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_onboarding/signup': {
       id: '/_onboarding/signup'
       path: '/signup'
@@ -189,38 +204,38 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OnboardingLoginRouteImport
       parentRoute: typeof OnboardingRoute
     }
-    '/(main)/$userId/': {
-      id: '/(main)/$userId/'
-      path: '/$userId'
-      fullPath: '/$userId'
-      preLoaderRoute: typeof mainUserIdIndexRouteImport
-      parentRoute: typeof rootRouteImport
+  }
+}
+declare module '@tanstack/react-start/server' {
+  interface ServerFileRoutesByPath {
+    '/api/leads': {
+      id: '/api/leads'
+      path: '/api/leads'
+      fullPath: '/api/leads'
+      preLoaderRoute: typeof ApiLeadsRouteServerRouteImport
+      parentRoute: typeof rootServerRouteImport
     }
     '/api/embed/visitor': {
       id: '/api/embed/visitor'
       path: '/api/embed/visitor'
       fullPath: '/api/embed/visitor'
-      preLoaderRoute: typeof ApiEmbedVisitorRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof ApiEmbedVisitorServerRouteImport
+      parentRoute: typeof rootServerRouteImport
     }
     '/api/embed/validate': {
       id: '/api/embed/validate'
       path: '/api/embed/validate'
       fullPath: '/api/embed/validate'
-      preLoaderRoute: typeof ApiEmbedValidateRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof ApiEmbedValidateServerRouteImport
+      parentRoute: typeof rootServerRouteImport
     }
-    '/(main)/$userId/$vehicleId/': {
-      id: '/(main)/$userId/$vehicleId/'
-      path: '/$userId/$vehicleId'
-      fullPath: '/$userId/$vehicleId'
-      preLoaderRoute: typeof mainUserIdVehicleIdIndexRouteImport
-      parentRoute: typeof rootRouteImport
+    '/api/embed/lead': {
+      id: '/api/embed/lead'
+      path: '/api/embed/lead'
+      fullPath: '/api/embed/lead'
+      preLoaderRoute: typeof ApiEmbedLeadServerRouteImport
+      parentRoute: typeof rootServerRouteImport
     }
-  }
-}
-declare module '@tanstack/react-start/server' {
-  interface ServerFileRoutesByPath {
     '/api/auth/$': {
       id: '/api/auth/$'
       path: '/api/auth/$'
@@ -248,16 +263,17 @@ const OnboardingRouteWithChildren = OnboardingRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   OnboardingRoute: OnboardingRouteWithChildren,
-  ApiEmbedValidateRoute: ApiEmbedValidateRoute,
-  ApiEmbedVisitorRoute: ApiEmbedVisitorRoute,
-  mainUserIdIndexRoute: mainUserIdIndexRoute,
-  mainUserIdVehicleIdIndexRoute: mainUserIdVehicleIdIndexRoute,
+  LeadsIndexRoute: LeadsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
 const rootServerRouteChildren: RootServerRouteChildren = {
+  ApiLeadsRouteServerRoute: ApiLeadsRouteServerRoute,
   ApiAuthSplatServerRoute: ApiAuthSplatServerRoute,
+  ApiEmbedLeadServerRoute: ApiEmbedLeadServerRoute,
+  ApiEmbedValidateServerRoute: ApiEmbedValidateServerRoute,
+  ApiEmbedVisitorServerRoute: ApiEmbedVisitorServerRoute,
 }
 export const serverRouteTree = rootServerRouteImport
   ._addFileChildren(rootServerRouteChildren)

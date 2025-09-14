@@ -1,26 +1,24 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createServerFileRoute } from '@tanstack/react-start/server'
 import { db } from '~/lib/pg/connect'
 import { nanoid } from 'nanoid'
 
-export const Route = createFileRoute('/api/embed/visitor')({
-  component: () => null,
+export const ServerRoute = createServerFileRoute('/api/embed/visitor').methods({
+  POST: async ({ request }) => {
+    try {
+      const body = await request.json()
+      return await createVisitor(body, request)
+    } catch (error) {
+      console.error('Embed API error:', error)
+      return new Response(JSON.stringify({ error: 'Internal server error' }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
+      })
+    }
+  }
 })
 
-export const POST = async (request: Request) => {
-  try {
-    const body = await request.json()
-    return await createVisitor(body)
-  } catch (error) {
-    console.error('Embed API error:', error)
-    return new Response(JSON.stringify({ error: 'Internal server error' }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' }
-    })
-  }
-}
-
 // Create visitor entry
-async function createVisitor(body: any) {
+async function createVisitor(body: any, request: Request) {
   const {
     companyId,
     sessionId,
